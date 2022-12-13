@@ -1,0 +1,398 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.2/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://code.jquery.com/jquery-3.6.1.min.js"></script>
+
+    <style>
+        .container-custom {
+            padding: 2em
+        }
+    </style>
+
+    <script type="text/javascript">
+        let arrNotes = []
+
+        function edit(get_id)
+        {
+            const title = $('#edit-title')
+            const notes = $('#edit-notes')
+            const color = $('#edit-color')
+
+            title.val(arrNotes[get_id].title)
+            notes.val(arrNotes[get_id].notes)
+
+            $('#edit-data').attr('data-id', get_id)
+        }
+
+
+        function remove(id)
+        {
+            const outputNotes = $('#output-notes')
+            const outputNotesApend = $('.row-append')
+            const outputNotesLg = $('.row-append-lg')
+            const outputNotesSm = $('.row-append-sm')
+
+            let temp = []
+            $.each(arrNotes, (index, value) =>
+            {
+                if (index != parseInt(id))
+                {
+                    temp.push({
+                        title: value.title,
+                        notes: value.notes,
+                        color: value.color
+                    });
+                }
+            })
+
+            arrNotes = temp;
+
+            outputNotesLg.html('')
+            outputNotesSm.html('')
+            outputNotesApend.html('')
+
+            $.each(arrNotes, (index, value) =>
+            {
+                outputNotesLg.append(
+                `
+                    <div class="col-lg-2">
+                        <div class="card text-bg-${value.color} mb-3 edit-card">
+
+                            <div style="position: absolute; top: -1px;right: 5px;z-index: 999">
+                                <button href="#remove" class="remove-card" onclick="remove(${index})" style="background: transparent;border: none;font-size: 25px">
+                                    &times;
+                                </button>
+                            </div>
+                            
+                            <div onclick="edit(${index})" data-bs-toggle="modal" data-bs-target="#modal-edit">
+                                    <div class="card-header">
+                                        ${value.title}
+                                        <div style="clear: both"></div>
+                                    </div>
+                                    <div class="card-body">
+                                        <p class="card-text">${value.notes}</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                `
+                )
+
+                outputNotesApend.append(
+                `
+                    <div class="col-md-3">
+                        <div class="card text-bg-${value.color} mb-3 edit-card">
+
+                            <div style="position: absolute; top: -1px;right: 5px;z-index: 999">
+                                <button href="#remove" class="remove-card" onclick="remove(${index})" style="background: transparent;border: none;font-size: 25px">
+                                    &times;
+                                </button>
+                            </div>
+                            
+                            <div onclick="edit(${index})" data-bs-toggle="modal" data-bs-target="#modal-edit">
+                                    <div class="card-header">
+                                        ${value.title}
+                                        <div style="clear: both"></div>
+                                    </div>
+                                    <div class="card-body">
+                                        <p class="card-text">${value.notes}</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                `
+                )
+
+                outputNotesSm.append(
+                `
+                    <div class="col-lg-6">
+                        <div class="card text-bg-${value.color} mb-3 edit-card">
+
+                            <div style="position: absolute; top: -1px;right: 5px;z-index: 999">
+                                <button href="#remove" class="remove-card" onclick="remove(${index})" style="background: transparent;border: none;font-size: 25px">
+                                    &times;
+                                </button>
+                            </div>
+                            
+                            <div onclick="edit(${index})" data-bs-toggle="modal" data-bs-target="#modal-edit">
+                                    <div class="card-header">
+                                        ${value.title}
+                                        <div style="clear: both"></div>
+                                    </div>
+                                    <div class="card-body">
+                                        <p class="card-text">${value.notes}</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                `
+                )
+            })
+        }
+        
+
+
+
+        $(function()
+        {
+            const outputNotes = $('#output-notes')
+            const outputNotesApend = $('.row-append')
+            const outputNotesLg = $('.row-append-lg')
+            const outputNotesSm = $('.row-append-sm')
+
+
+            if (arrNotes.length == 0)
+                outputNotes.html('Tidak ada notes yang ditambahkan.')
+
+
+
+
+            $('.tambah-notes').click(function()
+            {
+               const title = $('#add-title')
+               const notes = $('#add-notes')
+               const color = $('#add-color')
+                
+                if (title.val() == '' || notes.val() == '' || color.val() == '')
+                    alert('Silahkan isi data form terlebih dahulu')
+                else
+                    arrNotes.push({
+                        title: title.val(),
+                        notes: notes.val(),
+                        color: color.val()
+                    });
+
+                title.val('')
+                notes.val('')
+
+                renderUlang()
+            });
+
+
+            const renderUlang = () =>
+            {
+                outputNotesLg.html('')
+                outputNotesSm.html('')
+
+                outputNotesApend.html('')
+
+                $.each(arrNotes, (index, value) =>
+                {
+                    outputNotesLg.append(
+                    `
+                        <div class="col-lg-2">
+                            <div class="card text-bg-${value.color} mb-3 edit-card">
+
+                                <div style="position: absolute; top: -1px;right: 5px;z-index: 999">
+                                    <button href="#remove" class="remove-card" onclick="remove(${index})" style="background: transparent;border: none;font-size: 25px">
+                                        &times;
+                                    </button>
+                                </div>
+                                
+                                <div onclick="edit(${index})" data-bs-toggle="modal" data-bs-target="#modal-edit">
+                                        <div class="card-header">
+                                            ${value.title}
+                                            <div style="clear: both"></div>
+                                        </div>
+                                        <div class="card-body">
+                                            <p class="card-text">${value.notes}</p>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    `
+                    )
+
+                    outputNotesApend.append(
+                    `
+                        <div class="col-md-3">
+                            <div class="card text-bg-${value.color} mb-3 edit-card">
+
+                                <div style="position: absolute; top: -1px;right: 5px;z-index: 999">
+                                    <button href="#remove" class="remove-card" onclick="remove(${index})" style="background: transparent;border: none;font-size: 25px">
+                                        &times;
+                                    </button>
+                                </div>
+                                
+                                <div onclick="edit(${index})" data-bs-toggle="modal" data-bs-target="#modal-edit">
+                                        <div class="card-header">
+                                            ${value.title}
+                                            <div style="clear: both"></div>
+                                        </div>
+                                        <div class="card-body">
+                                            <p class="card-text">${value.notes}</p>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    `
+                    )
+
+                    outputNotesSm.append(
+                    `
+                        <div class="col-lg-6">
+                            <div class="card text-bg-${value.color} mb-3 edit-card">
+
+                                <div style="position: absolute; top: -1px;right: 5px;z-index: 999">
+                                    <button href="#remove" class="remove-card" onclick="remove(${index})" style="background: transparent;border: none;font-size: 25px">
+                                        &times;
+                                    </button>
+                                </div>
+                                
+                                <div onclick="edit(${index})" data-bs-toggle="modal" data-bs-target="#modal-edit">
+                                        <div class="card-header">
+                                            ${value.title}
+                                            <div style="clear: both"></div>
+                                        </div>
+                                        <div class="card-body">
+                                            <p class="card-text">${value.notes}</p>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    `
+                    )
+                })
+            
+
+            $('#edit-data').click(function(e)
+            {
+                const id = $(this).attr('data-id')
+
+                const title = $('#edit-title')
+                const notes = $('#edit-notes')
+                const color = $('#edit-color')
+
+                $.each(arrNotes, (index, value) =>
+                {
+                    if (index == id)
+                    {
+                        arrNotes[index].title = title.val();
+                        arrNotes[index].notes = notes.val()
+                        arrNotes[index].color = color.val()
+                    }
+                })
+
+                renderUlang();
+            });
+        }
+    })
+
+        
+    </script>
+
+</head>
+<body>
+    <div class="container container-custom">
+        <h1>MY NOTES</h1>
+        <br/>
+        <button id="tambah-notes" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#modal-add">Add Notes</button>
+        <br/><br/>
+
+        <div id="notes-append">
+            <div class="row row-append-lg">
+
+            </div>
+
+            <div class="row row-append">
+
+            </div>
+
+            <div class="row row-append-sm">
+
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal Add -->
+    <div class="modal fade" id="modal-add" data-bs-backdrop="static" data-bs-keyboard="false">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header bg-success text-white">
+                    <h1 class="modal-title fs-5" id="staticBackdropLabel">Add Notes</h1>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+
+                <div class="modal-body">
+                    <div class="mb-3">
+                        <label class="form-label">Title</label>
+                        <input type="text" class="form-control" id="add-title" placeholder="Notes Title">
+                    </div>
+
+                    <div class="mb-3">
+                        <label class="form-label">Notes</label>
+                        <textarea rows="6" placeholder="Text Notes" id="add-notes" class="form-control"></textarea>
+                    </div>
+
+                    <div class="mb-3">
+                        <label class="form-label">Color</label>
+                        <select class="form-select" id="add-color">
+                            <option value="warning">Yellow</option>
+                            <option value="success">Green</option>
+                            <option value="primary">Blue</option>
+                            <option value="danger">Red</option>
+                            <option value="light">White</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-success tambah-notes" data-bs-dismiss="modal">Add</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+
+    <!-- Modal Edit -->
+    <div class="modal fade" id="modal-edit" data-bs-backdrop="static" data-bs-keyboard="false">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header bg-success text-white">
+                    <h1 class="modal-title fs-5" id="staticBackdropLabel">Edit Notes</h1>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+
+                    <div class="mb-3">
+                        <label class="form-label">Title</label>
+                        <input type="text" class="form-control" id="edit-title" placeholder="Notes Title">
+                    </div>
+
+                    <div class="mb-3">
+                        <label class="form-label">Notes</label>
+                        <textarea rows="6" placeholder="Text Notes" id="edit-notes" class="form-control"></textarea>
+                    </div>
+
+                    <div class="mb-3">
+                        <label class="form-label">Color</label>
+                        <select class="form-select" id="edit-color">
+                            <option value="warning">Yellow</option>
+                            <option value="success">Green</option>
+                            <option value="primary">Blue</option>
+                            <option value="danger">Red</option>
+                            <option value="light">White</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" id="edit-data" data-id="0" class="btn btn-success" data-bs-dismiss="modal">Edit</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>
